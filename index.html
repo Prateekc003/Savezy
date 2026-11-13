@@ -7,6 +7,29 @@
     <title>Savezy – Save more. Waste less.</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
     <style>
+        main {
+    max-width: 1040px;
+    margin: auto;
+    padding: 20px 16px 90px
+}
+        .site-footer {
+    max-width: 1040px;
+    margin: 20px auto 0;
+    padding: 24px 16px;
+    border-top: 1px solid var(--line);
+    text-align: center;
+    color: var(--mute);
+}
+
+.site-footer a {
+    margin: 0 10px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.site-footer a:hover {
+    text-decoration: underline;
+}
         :root {
             --bg: #f6f5fa;
             --surface: #fff;
@@ -147,12 +170,6 @@
         nav button[aria-current="page"] {
             background: var(--lav);
             color: var(--pri)
-        }
-
-        nav .scan {
-            background: var(--pri);
-            color: var(--pri-ink);
-            font-weight: 600
         }
 
         main {
@@ -418,10 +435,6 @@
             display: none !important
         }
 
-        .best {
-            border: 2px solid var(--ok)
-        }
-
         @media (prefers-reduced-motion:reduce) {
             * {
                 transition: none !important
@@ -439,6 +452,17 @@
         </div>
     </header>
     <main id="app"></main>
+    <footer class="site-footer">
+    <p><strong>Savezy</strong> – Save more. Waste less.</p>
+
+    <div>
+        <a href="#about">About Us</a>
+        <a href="#contact">Contact Us</a>
+        <a href="#privacy">Privacy Policy</a>
+    </div>
+
+    <p class="mute">© 2026 Savezy. All rights reserved.</p>
+</footer>
     <dialog id="dlg"></dialog>
     <div id="toast" role="status"></div>
     <script>
@@ -449,23 +473,7 @@
         let P = [];
 
         const DEALS = [['Student discount: 20% off notebooks at ShopMart', 'Public offer, valid till 30 Nov'], ['Free delivery on QuickBite orders above Rs. 299', 'Public promo code, no sale needed'], ['CineHub weekday evening shows at Rs. 120', 'Public offer']];
-        const PRODUCTS = {
-            '8901234567890': {
-                name: 'Crunchy Oats Biscuits', brand: 'NutriBite', variant: 'Original', size: '400 g', store: 250,
-                exact: [{ s: 'Seller A', item: 219, del: 20, stock: 'In stock', t: '2 hours ago' }, { s: 'Seller B', item: 199, del: 40, stock: 'In stock', t: '5 hours ago' }],
-                similar: [{ s: 'Seller A', n: 'NutriBite Original 200 g', item: 129, del: 20, t: '2 hours ago' }]
-            },
-            '8909876543210': {
-                name: 'Cotton Notebook A5', brand: 'PaperTrail', variant: 'Ruled', size: '180 pages', store: 90,
-                exact: [{ s: 'Seller C', item: 72, del: 0, stock: 'In stock', t: '1 hour ago' }], similar: []
-            }
-        };
-        Object.assign(PRODUCTS, {
-            '8902345678901': { name: 'Instant Noodles Masala', brand: 'SlurpCo', variant: 'Masala', size: '70 g x 4', exact: [{ s: 'Seller A', item: 48, del: 30, stock: 'In stock', t: '3 hours ago' }, { s: 'Seller D', item: 56, del: 0, stock: 'Low stock', t: '1 hour ago' }], similar: [{ s: 'Seller A', n: 'SlurpCo Masala 70 g x 2', item: 26, del: 30, t: '3 hours ago' }] },
-            '8903456789012': { name: 'Herbal Face Wash', brand: 'LeafLab', variant: 'Neem', size: '100 ml', exact: [{ s: 'Seller B', item: 165, del: 40, stock: 'In stock', t: '4 hours ago' }, { s: 'Seller C', item: 172, del: 0, stock: 'In stock', t: '2 hours ago' }], similar: [{ s: 'Seller B', n: 'LeafLab Tulsi 100 ml', item: 150, del: 40, t: '4 hours ago' }] },
-            '8904567890123': { name: 'Gel Pen Pack', brand: 'PaperTrail', variant: 'Blue', size: '10 pens', exact: [{ s: 'Seller C', item: 95, del: 0, stock: 'Out of stock', t: '6 hours ago' }], similar: [] }
-        });
-        let S = { user: null, admin: false, hist: [], wish: new Set(), reqs: [], reports: [{ id: 1, lid: 3, why: 'Code may already be used' }], q: '', cat: 'All', view: 'home' };
+        let S = { user: null, admin: false, wish: new Set(), reqs: [], reports: [{ id: 1, lid: 3, why: 'Code may already be used' }], q: '', cat: 'All', view: 'home' };
         const $ = s => document.querySelector(s), inr = n => 'Rs. ' + n.toLocaleString('en-IN');
         function persist() { try { localStorage.setItem('sz1', JSON.stringify({ L, reqs: S.reqs, wish: [...S.wish], reports: S.reports })) } catch (e) { } }
         function toast(m) { persist(); const t = $('#toast'); t.textContent = m; t.classList.add('on'); setTimeout(() => t.classList.remove('on'), 2400) }
@@ -475,7 +483,7 @@
         function nav() {
             const v = S.view, items = [['home', 'Home'], ['explore', 'Explore'], ['sell', 'Sell'], ['requests', 'Requests' + (pend() ? ' (' + pend() + ')' : '')], ['dashboard', 'My Savezy'], ['admin', 'Admin']];
             $('#nav').innerHTML = items.map(([k, n]) => `<button onclick="go('${k}')" ${v === k ? 'aria-current="page"' : ''}>${n}</button>`).join('') +
-                `<button class="scan" onclick="go('scan')">Scan product</button><button onclick="${S.user ? 'logout()' : 'authDlg()'}">${S.user ? esc(S.user.name) + ' (log out)' : 'Log in'}</button>`
+                `<button onclick="${S.user ? 'logout()' : 'authDlg()'}">${S.user ? esc(S.user.name) + ' (log out)' : 'Log in'}</button>`
         }
         function card(l) {
             const d = days(l.exp); return `<button class="card listing" onclick="detail('${esc(String(l.id))}')"><div class="row"><span class="pill">${l.cat}</span>${d <= 14 ? `<span class="pill warn">Expires in ${d} days</span>` : ''}</div>
@@ -484,26 +492,17 @@
         const approved = () => L.filter(l => l.st === 'approved' && days(l.exp) >= 0);
         const V = {
             home() {
-                const a = approved(); return `<section class="hero"><h1>Why pay more when you can Savezy?</h1><p>Find deals, list eligible unused vouchers and check if a product is cheaper online while you stand in the store.</p>
-<div class="row"><button class="btn" onclick="go('explore')">Explore deals</button><button class="btn alt" onclick="go('scan')">Scan a product</button></div></section>
+                const a = approved(); return `<section class="hero"><h1>Why pay more when you can Savezy?</h1><p>Find deals and list eligible unused vouchers.</p>
+<div class="row"><button class="btn" onclick="go('explore')">Explore deals</button></div></section>
 <h2>Latest approved vouchers</h2><div class="grid">${a.slice(0, 3).map(card).join('')}</div>
 <h2>Expiring soon</h2><div class="grid">${[...a].sort((x, y) => days(x.exp) - days(y.exp)).slice(0, 3).map(card).join('')}</div>
 <h2>Deals feed</h2><div class="grid">${DEALS.map(d => `<div class="card"><h3>${d[0]}</h3><div class="mute">${d[1]}</div></div>`).join('')}</div>
 <h2>How it works</h2><div class="grid"><div class="card"><h3>List</h3><div class="mute">Submit an eligible, transferable voucher. An admin reviews it.</div></div><div class="card"><h3>Request</h3><div class="mute">Check expiry and conditions, then send a purchase request.</div></div><div class="card"><h3>Coordinate</h3><div class="mute">Buyer and seller arrange the transfer. Savezy processes no payment.</div></div></div>
-<div class="note">Voucher listings are loaded live from Firebase. Product comparison prices are sample data.</div>`},
+<div class="note">Voucher listings are loaded live from Firebase.</div>`},
             explore() {
                 const r = approved().filter(l => (S.cat === 'All' || l.cat === S.cat) && (l.brand + l.off + l.type).toLowerCase().includes(S.q.toLowerCase()));
                 return `<h1>Explore</h1><input id="q" placeholder="Search brand or offer" value="${esc(S.q)}" aria-label="Search" oninput="S.q=this.value;list()">
 <div class="tabs" style="margin-top:12px">${['All', ...CATS].map(c => `<button class="${S.cat === c ? 'on' : ''}" onclick="S.cat='${c}';render()">${c}</button>`).join('')}</div><div class="row" style="margin-bottom:12px"><label class="mute" style="margin:0">Sort <select style="width:auto" onchange="S.sort=this.value;list()"><option value="soon">Expiring soonest</option><option value="price" ${S.sort === 'price' ? 'selected' : ''}>Price, low to high</option><option value="new" ${S.sort === 'new' ? 'selected' : ''}>Newest</option></select></label><label class="mute" style="margin:0">Expires within <select style="width:auto" onchange="S.exp=this.value;list()">${[['all', 'Any time'], ['7', '7 days'], ['14', '14 days'], ['30', '30 days']].map(([v, t]) => `<option value="${v}" ${S.exp === v ? 'selected' : ''}>${t}</option>`).join('')}</select></label><label class="mute" style="margin:0">Type <select style="width:auto" onchange="S.typ=this.value;list()">${['all', ...TYPES].map(t => `<option value="${t}" ${S.typ === t ? 'selected' : ''}>${t === 'all' ? 'All types' : t}</option>`).join('')}</select></label></div><div id="list" class="grid"></div>`
-            },
-            scan() {
-                return `<h1>Savezy Scan</h1><p class="mute">Scan the barcode in the store. If scanning fails, type the number or search by name.</p><div class="row" style="margin-bottom:12px"><span class="mute">Connected sources (sample):</span>${SRCS.map(n => `<span class="pill ok">${n}</span>`).join('')}<span class="pill">More coming</span></div>
-<div class="card form"><div class="tabs" id="stabs"><button class="on" onclick="stab(0)">Camera</button><button onclick="stab(1)">Type barcode</button><button onclick="stab(2)">Search by name</button></div>
-<div id="sp0"><video id="vid" playsinline muted style="width:100%;border-radius:12px;display:none;background:#000"></video><button class="btn" onclick="cam()">Start camera</button><p class="mute" id="cams">Point the camera at the barcode on the pack.</p></div>
-<div id="sp1" hidden><label for="bc">Barcode number</label><input id="bc" inputmode="numeric" placeholder="e.g. 8901234567890"><div style="margin-top:12px"><button class="btn" onclick="lookup($('#bc').value)">Find product</button></div></div>
-<div id="sp2" hidden><label for="nm">Product name</label><input id="nm" placeholder="e.g. biscuits, face wash" oninput="byName(this.value)"><div id="nmr" class="row" style="margin-top:10px"></div></div>
-<label for="lp">Price in this store, Rs. (optional)</label><input id="lp" type="number" min="0" inputmode="decimal" placeholder="e.g. 250">
-<p class="mute">No product handy? Try a sample:</p><div class="row">${Object.keys(PRODUCTS).map(c => `<button class="btn alt sm" onclick="lookup('${c}')">${PRODUCTS[c].name}</button>`).join('')}</div></div><div id="res"></div>${hist()}`
             },
             sell() {
                 return `<h1>Sell a voucher</h1><div class="form card"><p class="mute">Only vouchers whose terms allow transfer can be listed. Never share the private code here.</p>
@@ -532,7 +531,127 @@
                 return `<h1>Admin review</h1><div class="note">Review coupon details and private eligibility evidence. Approval does not guarantee redemption.</div>
 <h2>Pending listings</h2>${P.length ? P.map(l => `<div class="card" style="margin-bottom:10px"><h3>${esc(l.brand)} – ${esc(l.off)}</h3><div class="mute">${esc(l.type)} · ${inr(l.price)} · Expires ${esc(l.exp)}<br>Seller: ${esc(l.seller || 'Unknown')}<br>${esc(l.elig || '')}<br><b>Evidence:</b> ${esc(l.evidence || 'Evidence not found')}</div><div class="row" style="margin-top:10px"><button class="btn sm" onclick="review('${esc(l.id)}',1)">Approve</button><button class="btn sm bad" onclick="review('${esc(l.id)}',0)">Reject</button></div></div>`).join('') : '<p class="mute">Nothing waiting for review.</p>'}
 <h2>Reports</h2><p class="mute">Firestore reports will be connected in a later step.</p>`
+            },
+
+            about() {
+                return `
+                    <div class="card">
+                        <h1>About Savezy</h1>
+                        <p>
+                            Savezy is a platform designed to help people save money
+                            by discovering deals, comparing product prices and
+                            finding eligible unused vouchers.
+                        </p>
+
+                        <h2>Our purpose</h2>
+                        <p>
+                            We want to make shopping smarter and help users
+                            make better purchasing decisions.
+                        </p>
+
+                        <h2>What Savezy offers</h2>
+                        <ul>
+                            <li>Discover available voucher offers.</li>
+                            <li>List eligible unused transferable vouchers.</li>
+                        </ul>
+
+                    </div>
+                `;
+            },
+
+            contact() {
+                return `
+                    <div class="card form">
+                        <h1>Contact Us</h1>
+                        <p>
+                            Have a question, suggestion or problem with Savezy?
+                            We would like to hear from you.
+                        </p>
+
+                        <h2>Get in touch</h2>
+                        <p>
+                            Email:
+                            <a href="mailto:YOUR_EMAIL@example.com">
+                                rahulks14322@example.com
+                            </a>
+                        </p>
+
+                        <p class="mute">
+                            Replace YOUR_EMAIL@example.com with your actual
+                            Savezy support email address before publishing.
+                        </p>
+                    </div>
+                `;
+            },
+
+            privacy() {
+                return `
+                    <div class="card">
+                        <h1>Privacy Policy</h1>
+                        <p><b>Last updated:</b> 11 November 2026</p>
+
+                        <p>
+                            Savezy respects your privacy. This policy explains
+                            what information may be used when you access
+                            our website.
+                        </p>
+
+                        <h2>1. Information we collect</h2>
+                        <p>
+                            When you register, we use your name and email
+                            address to create and manage your account.
+                        </p>
+                        <p>
+                            If you use voucher features, information such as
+                            voucher details, listing information and requests
+                            may be stored to operate the service.
+                        </p>
+
+                        <h2>2. How we use information</h2>
+                        <ul>
+                            <li>To create and manage user accounts.</li>
+                            <li>To display and manage voucher listings.</li>
+                            <li>To handle buyer and seller requests.</li>
+                            <li>To improve the Savezy service.</li>
+                        </ul>
+
+                        <h2>3. Firebase services</h2>
+                        <p>
+                            Savezy uses Google Firebase Authentication and
+                            Cloud Firestore for account authentication and
+                            application data storage.
+                        </p>
+
+                        <h2>4. Local storage</h2>
+                        <p>
+                            The website may use your browser's local storage
+                            to retain certain application information.
+                        </p>
+
+                        <h2>5. Third-party services</h2>
+                        <p>
+                            Our website is hosted through Netlify and uses
+                            Firebase services. Those providers may process
+                            information according to their own privacy policies.
+                        </p>
+
+                        <h2>6. Data security</h2>
+                        <p>
+                            We use Firebase security rules and other
+                            appropriate measures to help protect application
+                            information. No online service can guarantee
+                            absolute security.
+                        </p>
+
+                        <h2>7. Contact</h2>
+                        <p>
+                            For privacy-related questions, contact:
+                            YOUR_EMAIL@example.com
+                        </p>
+                    </div>
+                `;
             }
+
         };
         const RC = { Requested: 'warn', Accepted: 'warn', 'Code released': 'ok', Completed: 'ok', Declined: 'bad' };
         function mine(r) { const l = L.find(x => x.id === r.lid); return !!(l && S.user && l.seller === S.user.name) }
@@ -550,7 +669,7 @@
             let r = approved().filter(l => (S.cat === 'All' || l.cat === S.cat) && (!S.typ || S.typ === 'all' || l.type === S.typ) && (!S.exp || S.exp === 'all' || days(l.exp) <= +S.exp) && (l.brand + l.off + l.type).toLowerCase().includes(S.q.toLowerCase())); if (S.sort === 'price') r.sort((a, b) => a.price - b.price); else if (S.sort === 'new') r.sort((a, b) => b.id - a.id); else r.sort((a, b) => days(a.exp) - days(b.exp));
             $('#list').innerHTML = r.length ? r.map(card).join('') : '<p class="mute">No offers match. Try another word or category.</p>'
         }
-        function render() { stopCam(); S.view = location.hash.slice(1) || 'home'; if (!V[S.view]) S.view = 'home'; nav(); $('#app').innerHTML = V[S.view](); if (S.view === 'explore') list(); window.scrollTo(0, 0) }
+        function render() { S.view = location.hash.slice(1) || 'home'; if (!V[S.view]) S.view = 'home'; nav(); $('#app').innerHTML = V[S.view](); if (S.view === 'explore') list(); window.scrollTo(0, 0) }
         function detail(id) {
             const l = L.find(x => x.id === id), d = days(l.exp);
             $('#dlg').innerHTML = `<h2 style="margin-top:0">${esc(l.brand)}: ${esc(l.off)}</h2><div class="row"><span class="pill">${l.type}</span><span class="pill ${d <= 14 ? 'warn' : 'ok'}">Expires ${l.exp}</span></div>
@@ -753,47 +872,6 @@
         }
         function takedown(rid) { const r = S.reports.find(x => x.id === rid); L = L.filter(l => l.id !== r.lid); S.reqs = S.reqs.filter(q => q.lid !== r.lid); S.reports = S.reports.filter(x => x.lid !== r.lid); toast('Listing taken down'); render() }
         function dismiss(rid) { S.reports = S.reports.filter(x => x.id !== rid); toast('Report dismissed'); render() }
-        const SRC = { 'Seller A': 'Amazon', 'Seller B': 'Flipkart', 'Seller C': 'Meesho', 'Seller D': 'BigBasket' }, SRCS = ['Amazon', 'Flipkart', 'Meesho', 'BigBasket']; S.src = new Set(SRCS);
-        function chips(code) { return SRCS.map(n => `<button class="btn sm ${S.src.has(n) ? '' : 'alt'}" aria-pressed="${S.src.has(n)}" onclick="togSrc('${n}','${code}')">${n}</button>`).join('') }
-        function togSrc(n, code) { S.src.has(n) ? S.src.delete(n) : S.src.add(n); show(code) }
-        let stream = null, timer = null;
-        function stab(i) { document.querySelectorAll('#stabs button').forEach((b, j) => b.classList.toggle('on', i === j));[0, 1, 2].forEach(j => $('#sp' + j).hidden = j !== i); if (i) stopCam() }
-        function stopCam() { clearInterval(timer); if (stream) stream.getTracks().forEach(t => t.stop()); stream = null; const v = $('#vid'); if (v) v.style.display = 'none' }
-        async function cam() {
-            const m = $('#cams');
-            if (!('BarcodeDetector' in window) || !navigator.mediaDevices) { m.textContent = 'This browser cannot scan barcodes with the camera. Type the number instead.'; return stab(1) }
-            try {
-                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }); const v = $('#vid'); v.srcObject = stream; v.style.display = 'block'; await v.play();
-                const det = new BarcodeDetector({ formats: ['ean_13', 'ean_8', 'upc_a', 'upc_e'] }); m.textContent = 'Scanning…';
-                timer = setInterval(async () => { try { const r = await det.detect(v); if (r.length) { stopCam(); lookup(r[0].rawValue) } } catch (e) { } }, 400)
-            }
-            catch (e) { m.textContent = 'Camera access was blocked. Allow it in your browser, or type the number instead.' }
-        }
-        function byName(q) {
-            q = q.trim().toLowerCase(); const r = q ? Object.entries(PRODUCTS).filter(([c, p]) => (p.name + p.brand).toLowerCase().includes(q)) : [];
-            $('#nmr').innerHTML = !q ? '' : r.length ? r.map(([c, p]) => `<button class="btn alt sm" onclick="lookup('${c}')">${p.name} (${p.size})</button>`).join('') : '<span class="mute">No product found. Check the spelling or scan the barcode.</span>'
-        }
-        function lookup(code) {
-            code = (code || '').replace(/\D/g, ''); if (!code) return toast('Enter a barcode number'); const p = PRODUCTS[code], el = $('#res');
-            if (!p) { el.innerHTML = `<div class="card" style="margin-top:14px"><span class="pill bad">No match</span><h3 style="margin-top:8px">We could not identify barcode ${code}</h3><p class="mute">There is no reliable data for it, so we show no prices. Check the digits, or search by name.</p><button class="btn alt" onclick="stab(2)">Search by name</button></div>`; return }
-            el.innerHTML = `<div class="card" style="margin-top:14px"><h3>Is this your product?</h3><p><b>${p.name}</b><br><span class="mute">${p.brand} · ${p.variant} · ${p.size}</span></p><div class="row"><button class="btn" onclick="show('${code}')">Yes, compare prices</button><button class="btn alt" onclick="stab(2)">No, search by name</button></div></div>`; el.scrollIntoView({ behavior: 'smooth' })
-        }
-        function show(code) {
-            const p = PRODUCTS[code], lp = parseFloat($('#lp').value), store = isNaN(lp) ? null : lp, el = $('#res');
-            S.hist = [code, ...S.hist.filter(c => c !== code)].slice(0, 5);
-            const rows = p.exact.map(x => ({ ...x, s: SRC[x.s] || x.s, tot: x.item + x.del })).filter(x => S.src.has(x.s)).sort((a, b) => a.tot - b.tot), buy = rows.filter(x => x.stock !== 'Out of stock'), best = buy[0];
-            let sum; if (!best) sum = '<b>No exact match is in stock online right now.</b>'; else if (store === null) sum = `Cheapest in-stock exact match: <b>${inr(best.tot)}</b> total. Enter the store price above to see the difference.`;
-            else { const d = store - best.tot; sum = d > 0 ? `Online is <b>${inr(d)} cheaper</b> than this store (${inr(best.tot)} total vs ${inr(store)}), if the price holds at checkout.` : `<b>This store is the cheaper option.</b> The best online total is ${inr(best.tot)} vs ${inr(store)} in store.` }
-            const stk = s => `<span class="pill ${s === 'In stock' ? 'ok' : s === 'Low stock' ? 'warn' : 'bad'}">${s}</span>`;
-            el.innerHTML = `<div class="card" style="margin-top:14px"><span class="pill ok">Exact match</span><h3 style="margin-top:8px">${p.name}</h3><div class="mute">${p.brand} · ${p.variant} · ${p.size} · Barcode ${code}</div><p>${sum}</p>
-<h2 style="margin-top:8px">Online offers, lowest total first</h2><div class="row" style="margin:6px 0" role="group" aria-label="Sources"><span class="mute">Sources:</span>${chips(code)}</div><div class="scroll"><table><tr><th>Source</th><th>Item</th><th>Delivery</th><th>Total</th><th>Stock</th><th>Match</th><th>Price last checked</th><th></th></tr>
-${store !== null ? `<tr><td>This store</td><td>${inr(store)}</td><td>–</td><td><b>${inr(store)}</b></td><td>–</td><td>–</td><td class="mute">You entered it</td><td></td></tr>` : ''}
-${rows.map(x => `<tr><td>${x.s}</td><td>${inr(x.item)}</td><td>${x.del ? inr(x.del) : 'Free'}</td><td><b>${inr(x.tot)}</b></td><td>${stk(x.stock)}</td><td class="mute">Barcode</td><td class="mute">${x.t}</td><td><button class="btn sm alt" onclick="toast('Opens the retailer page in the live build')">Open retailer</button></td></tr>`).join('')}</table></div>
-${p.similar.length ? `<h2>Similar products (not exact matches)</h2><div class="scroll"><table>${p.similar.map(x => `<tr><td>${x.n}</td><td>${SRC[x.s] || x.s}</td><td><b>${inr(x.item + x.del)}</b> total</td><td><span class="pill warn">Similar product</span></td><td class="mute">${x.t}</td></tr>`).join('')}</table></div>` : ''}
-<div class="note">Sample data for this prototype. In the live build, the retailer’s checkout page is always the final price.</div></div>`;
-            el.scrollIntoView({ behavior: 'smooth' }); const h = $('#hist'); if (h) h.outerHTML = hist()
-        }
-        function hist() { return S.hist.length ? `<div id="hist"><h2>Recent scans</h2><div class="row">${S.hist.map(c => `<button class="btn alt sm" onclick="lookup('${c}')">${PRODUCTS[c].name}</button>`).join('')}</div></div>` : '<div id="hist"></div>' }
         try { const d = JSON.parse(localStorage.getItem('sz1')); if (d) { S.reqs = d.reqs || []; S.wish = new Set(d.wish || []); S.reports = d.reports || []; } } catch (e) { console.error('Local storage error:', e) }
 
         let stopApprovedListings = null;
@@ -844,14 +922,9 @@ ${p.similar.length ? `<h2>Similar products (not exact matches)</h2><div class="s
             });
         });
 
-<<<<<<< HEAD
+
         addEventListener('hashchange', render); render();
     </script>
 </body>
 </html>
-=======
-        addEventListener('hashchange', render); render();a
-    </script>
-</body>
-</html>
->>>>>>> 6e7270a19c7debec845114f3edcf08904c840a79
+
